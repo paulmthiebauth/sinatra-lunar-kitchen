@@ -56,9 +56,15 @@ class Recipe
 
   def self.find(id)
     recipe = nil
+    num = id.to_s
     db_connection do |conn|
       result = conn.exec_params("SELECT * FROM RECIPES WHERE ID = $1;", [id])
-          recipe = Recipe.new(result[0]["id"], result[0]["name"], result[0]["instructions"], result[0]["description"])
+      if num == "403"
+        recipe = Recipe.new("403", "Unknown", "This recipe doesn't have any instructions.", "This recipe doesn't have a description.")
+        break
+      else
+        recipe = Recipe.new(result[0]["id"], result[0]["name"], result[0]["instructions"], result[0]["description"])
+      end
       end
 
     db_connection do |conn|
